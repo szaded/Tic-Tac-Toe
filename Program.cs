@@ -25,7 +25,7 @@
         public Game()
         {
             player1 = new Player(Symbol.X, "Player 1");
-            player1 = new Player(Symbol.O, "Player 2");
+            player2 = new Player(Symbol.O, "Player 2");
             currentPlayer = player1;
             winner = null;
             turn = 0;
@@ -50,11 +50,11 @@
             while (turn < 9)
             {
                 turn++;
-                Game.Play(currentPlayer, turn);
+                Play(currentPlayer, turn);
                 Console.Clear();
                 GameBoard.DrawBoard();
 
-                if (Game.CheckForWin(currentPlayer.Symbol))
+                if (CheckForWin(currentPlayer.Symbol))
                 {
                     winner = currentPlayer;
                     break;
@@ -94,7 +94,7 @@
                 int input = Convert.ToInt32(Console.ReadLine());
 
                 // GetCoordinates returnes a tuple
-                // Can return -1, -1 if input was outside of 1-9, which will fail the CheckLegalInput below
+                // It can return (-1, -1) if input was outside of 1-9, which will fail the CheckLegalInput below
                 var (x, y) = GameBoard.GetCoordinates(input);
 
                 // Also checks if square is not already taken
