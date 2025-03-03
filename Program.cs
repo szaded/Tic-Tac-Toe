@@ -109,18 +109,18 @@
         public static bool CheckForWin(Symbol symbol)
         {
             // Rows
-            if (GameBoard.Board[0, 0] == symbol && GameBoard.Board[0, 1] == symbol && GameBoard.Board[0, 2] == symbol) return true;
-            if (GameBoard.Board[1, 0] == symbol && GameBoard.Board[1, 1] == symbol && GameBoard.Board[1, 2] == symbol) return true;
-            if (GameBoard.Board[2, 0] == symbol && GameBoard.Board[2, 1] == symbol && GameBoard.Board[2, 2] == symbol) return true;
+            if (GameBoard.GetSquare(0, 0) == symbol && GameBoard.GetSquare(0, 1) == symbol && GameBoard.GetSquare(0, 2) == symbol) return true;
+            if (GameBoard.GetSquare(1, 0) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(1, 2) == symbol) return true;
+            if (GameBoard.GetSquare(2, 0) == symbol && GameBoard.GetSquare(2, 1) == symbol && GameBoard.GetSquare(2, 2) == symbol) return true;
 
             // Columns
-            if (GameBoard.Board[0, 0] == symbol && GameBoard.Board[1, 0] == symbol && GameBoard.Board[2, 0] == symbol) return true;
-            if (GameBoard.Board[0, 1] == symbol && GameBoard.Board[1, 1] == symbol && GameBoard.Board[2, 1] == symbol) return true;
-            if (GameBoard.Board[0, 2] == symbol && GameBoard.Board[1, 2] == symbol && GameBoard.Board[2, 2] == symbol) return true;
+            if (GameBoard.GetSquare(0, 0) == symbol && GameBoard.GetSquare(1, 0) == symbol && GameBoard.GetSquare(2, 0) == symbol) return true;
+            if (GameBoard.GetSquare(0, 1) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(2, 1) == symbol) return true;
+            if (GameBoard.GetSquare(0, 2) == symbol && GameBoard.GetSquare(1, 2) == symbol && GameBoard.GetSquare(2, 2) == symbol) return true;
 
             // Diagonals
-            if (GameBoard.Board[0, 0] == symbol && GameBoard.Board[1, 1] == symbol && GameBoard.Board[2, 2] == symbol) return true;
-            if (GameBoard.Board[0, 2] == symbol && GameBoard.Board[1, 1] == symbol && GameBoard.Board[2, 0] == symbol) return true;
+            if (GameBoard.GetSquare(0, 0) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(2, 2) == symbol) return true;
+            if (GameBoard.GetSquare(0, 2) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(2, 0) == symbol) return true;
 
             return false;
         }
@@ -140,12 +140,18 @@
 
     public class GameBoard
     {
-        public static Symbol[,] Board { get; private set; } = new Symbol[3, 3]
+        private static Symbol[,] Board = new Symbol[3, 3]
         {
             { Symbol.Empty, Symbol.Empty, Symbol.Empty },
             { Symbol.Empty, Symbol.Empty, Symbol.Empty },
             { Symbol.Empty, Symbol.Empty, Symbol.Empty }
         };
+
+        // Getter method. Needed to make the Board above private (in order to prevent outsiders from changing the elements inside the array).
+        public static Symbol GetSquare(int x, int y)
+        {
+            return Board[x, y];
+        }
 
         public static (int X, int Y) GetCoordinates(int input)
         {
