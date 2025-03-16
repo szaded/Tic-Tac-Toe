@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            Game game = new Game();
+            GameBoard gameBoard = new GameBoard();
+            Game game = new Game(gameBoard);
             game.ShowIntro();
             game.PlayGame();
 
@@ -15,6 +16,7 @@
 
     public class Game
     {
+        private GameBoard gameBoard;
         private Player player1;
         private Player player2;
         private Player currentPlayer;
@@ -22,8 +24,10 @@
         private int turn;
 
         // Basic game setup
-        public Game()
+        public Game(GameBoard board)
         {
+            gameBoard = board;
+
             player1 = new Player(Symbol.X, "Player 1");
             player2 = new Player(Symbol.O, "Player 2");
             currentPlayer = player1;
@@ -52,7 +56,7 @@
                 turn++;
                 Play(currentPlayer, turn);
                 Console.Clear();
-                GameBoard.DrawBoard();
+                gameBoard.DrawBoard();
 
                 if (CheckForWin(currentPlayer.Symbol))
                 {
@@ -82,7 +86,7 @@
             }
         }
 
-        public static void Play(Player player, int turn)
+        public void Play(Player player, int turn)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Turn: {turn}\n");
@@ -95,32 +99,32 @@
 
                 // GetCoordinates returnes a tuple
                 // It can return (-1, -1) if input was outside of 1-9, which will fail the CheckLegalInput below
-                var (x, y) = GameBoard.GetCoordinates(input);
+                var (x, y) = gameBoard.GetCoordinates(input);
 
                 // Also checks if square is not already taken
-                if (GameBoard.CheckLegalInput(x, y))
+                if (gameBoard.CheckLegalInput(x, y))
                 {
-                    GameBoard.UpdateSquare(x, y, player.Symbol);
+                    gameBoard.UpdateSquare(x, y, player.Symbol);
                     break;
                 }
             }
         }
 
-        public static bool CheckForWin(Symbol symbol)
+        public bool CheckForWin(Symbol symbol)
         {
             // Rows
-            if (GameBoard.GetSquare(0, 0) == symbol && GameBoard.GetSquare(0, 1) == symbol && GameBoard.GetSquare(0, 2) == symbol) return true;
-            if (GameBoard.GetSquare(1, 0) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(1, 2) == symbol) return true;
-            if (GameBoard.GetSquare(2, 0) == symbol && GameBoard.GetSquare(2, 1) == symbol && GameBoard.GetSquare(2, 2) == symbol) return true;
+            if (gameBoard.GetSquare(0, 0) == symbol && gameBoard.GetSquare(0, 1) == symbol && gameBoard.GetSquare(0, 2) == symbol) return true;
+            if (gameBoard.GetSquare(1, 0) == symbol && gameBoard.GetSquare(1, 1) == symbol && gameBoard.GetSquare(1, 2) == symbol) return true;
+            if (gameBoard.GetSquare(2, 0) == symbol && gameBoard.GetSquare(2, 1) == symbol && gameBoard.GetSquare(2, 2) == symbol) return true;
 
             // Columns
-            if (GameBoard.GetSquare(0, 0) == symbol && GameBoard.GetSquare(1, 0) == symbol && GameBoard.GetSquare(2, 0) == symbol) return true;
-            if (GameBoard.GetSquare(0, 1) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(2, 1) == symbol) return true;
-            if (GameBoard.GetSquare(0, 2) == symbol && GameBoard.GetSquare(1, 2) == symbol && GameBoard.GetSquare(2, 2) == symbol) return true;
+            if (gameBoard.GetSquare(0, 0) == symbol && gameBoard.GetSquare(1, 0) == symbol && gameBoard.GetSquare(2, 0) == symbol) return true;
+            if (gameBoard.GetSquare(0, 1) == symbol && gameBoard.GetSquare(1, 1) == symbol && gameBoard.GetSquare(2, 1) == symbol) return true;
+            if (gameBoard.GetSquare(0, 2) == symbol && gameBoard.GetSquare(1, 2) == symbol && gameBoard.GetSquare(2, 2) == symbol) return true;
 
             // Diagonals
-            if (GameBoard.GetSquare(0, 0) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(2, 2) == symbol) return true;
-            if (GameBoard.GetSquare(0, 2) == symbol && GameBoard.GetSquare(1, 1) == symbol && GameBoard.GetSquare(2, 0) == symbol) return true;
+            if (gameBoard.GetSquare(0, 0) == symbol && gameBoard.GetSquare(1, 1) == symbol && gameBoard.GetSquare(2, 2) == symbol) return true;
+            if (gameBoard.GetSquare(0, 2) == symbol && gameBoard.GetSquare(1, 1) == symbol && gameBoard.GetSquare(2, 0) == symbol) return true;
 
             return false;
         }
@@ -140,7 +144,7 @@
 
     public class GameBoard
     {
-        private static Symbol[,] Board = new Symbol[3, 3]
+        private Symbol[,] Board = new Symbol[3, 3]
         {
             { Symbol.Empty, Symbol.Empty, Symbol.Empty },
             { Symbol.Empty, Symbol.Empty, Symbol.Empty },
@@ -148,12 +152,12 @@
         };
 
         // Getter method. Needed to make the Board above private (in order to prevent outsiders from changing the elements inside the array).
-        public static Symbol GetSquare(int x, int y)
+        public Symbol GetSquare(int x, int y)
         {
             return Board[x, y];
         }
 
-        public static (int X, int Y) GetCoordinates(int input)
+        public (int X, int Y) GetCoordinates(int input)
         {
             switch (input)
             {
@@ -180,12 +184,12 @@
             }
         }
 
-        public static void UpdateSquare(int x, int y, Symbol symbol)
+        public void UpdateSquare(int x, int y, Symbol symbol)
         {
             Board[x, y] = symbol;
         }
 
-        public static bool CheckLegalInput(int x, int y)
+        public bool CheckLegalInput(int x, int y)
         {
             // GetCoordinates default returns -1, -1 if inputs were outside of 1-9
             if (x < 0 || x > 2 || y < 0 || y > 2)
@@ -201,7 +205,7 @@
             else return true;
         }
 
-        public static void DrawBoard()
+        public void DrawBoard()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine();
@@ -214,7 +218,7 @@
             Console.ResetColor();
         }
 
-        private static string ShowSquareAs(Symbol symbol) => symbol switch
+        private string ShowSquareAs(Symbol symbol) => symbol switch
         {
             Symbol.Empty => " ",
             Symbol.X => "X",
